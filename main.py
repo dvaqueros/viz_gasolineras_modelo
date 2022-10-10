@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-datapath = 'data/raw/'
+datapath = './data/raw/*.parquet'
 
-exec(open('src/prueba.py').read())
+exec(open('src/read_data.py').read())
