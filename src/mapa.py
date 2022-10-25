@@ -5,10 +5,10 @@ import plotly.graph_objects as go
 import pandas as pd
 
 fig = go.Figure(data=go.Scattergeo(
-        locationmode = 'europe',
-        lon = df['long'],
-        lat = df['lat'],
-        text = df['text'],
+        locationmode = 'country names',
+        lon = df['longitude'],
+        lat = df['latitude'],
+        #text = df['text'],
         mode = 'markers',
         marker = dict(
             size = 8,
@@ -27,7 +27,7 @@ fig.update_layout(
         title = 'Gasolina',
         geo = dict(
             scope='europe',
-            projection_type='europe',
+            #projection_type='albers',
             showland = True,
             landcolor = "rgb(250, 250, 250)",
             subunitcolor = "rgb(217, 217, 217)",
@@ -36,4 +36,5 @@ fig.update_layout(
             subunitwidth = 0.5
         ),
     )
+
 fig.show()
