@@ -15,7 +15,7 @@ fig = go.Figure(data=go.Scattergeo(
             opacity = 0.8,
             reversescale = True,
             autocolorscale = False,
-            symbol = 'square',
+            symbol = 'octagon',
             line = dict(
                 width=1,
                 color='rgba(102, 102, 102)'
@@ -28,13 +28,17 @@ fig.update_layout(
         geo = dict(
             scope='europe',
             #projection_type='albers',
+            resolution = 50,
+            fitbounds='locations',
             showland = True,
-            landcolor = "rgb(250, 250, 250)",
-            subunitcolor = "rgb(217, 217, 217)",
-            countrycolor = "rgb(217, 217, 217)",
+            #landcolor = "rgb(250, 250, 250)",
             countrywidth = 0.5,
-            subunitwidth = 0.5
-        ),
+            subunitwidth = 0.5,
+            showcountries=True,
+            countrycolor="Black",
+            showsubunits=False, 
+            subunitcolor="Black")
     )
 
 fig.show()
+

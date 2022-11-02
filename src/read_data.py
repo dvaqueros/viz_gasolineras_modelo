@@ -14,9 +14,10 @@ con.execute("DESCRIBE SELECT * FROM 'gas_prices';").fetchall()
 stmt = """
     SELECT *
     FROM 'gas_prices'
-    WHERE date > '2021-01-01' 
+    WHERE '2021-01-01' < date AND date < '2021-02-01' AND province_name == 'BALEARS (ILLES)'
 """
 
 df = con.execute(stmt).fetchdf()
+df.to_csv('datos.csv')
 
 print(df)
