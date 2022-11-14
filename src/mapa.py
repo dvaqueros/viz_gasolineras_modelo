@@ -2,7 +2,7 @@
 
 import plotly.graph_objects as go
 
-import pandas as pd
+
 # We build in plotly a scatterplot to observe the distribution of oil stations geographically
 fig = go.Figure(data=go.Scattergeo(
         locationmode = 'country names',
