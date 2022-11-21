@@ -7,12 +7,18 @@ con.execute(
 con.execute("DESCRIBE SELECT * FROM 'gas_prices';").fetchall()
 
 # 
+#stmt = """
+#    SELECT *
+#    FROM 'gas_prices'
+#    WHERE '2021-01-01' < date AND date < '2021-02-01' AND province_name == 'BALEARS (ILLES)'
+#"""
+
 stmt = """
     SELECT *
     FROM 'gas_prices'
-    WHERE '2021-01-01' < date AND date < '2021-02-01' AND province_name == 'BALEARS (ILLES)'
+    WHERE municipality_name == 'Madrid' AND '2021-01-01' < date AND date < '2023-02-01'
 """
-
+#WHERE 'province_name' == 'MADRID'
 # Create DataFrame with the selected data
 
 df = con.execute(stmt).fetchdf()
@@ -23,6 +29,7 @@ print('#########################################################')
 print('     DATA TYPE, NON-NULL VARIABLES AND MEMORY USAGE')
 print('#########################################################')
 print('     ')
+print(df['province_name'].unique())
 print(df.info())
 print('     ')
 print('---------- Filling NaN ...')
