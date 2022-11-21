@@ -3,7 +3,8 @@
 import plotly.graph_objects as go
 
 df_mapa = df.copy()
-df_mapa = df_mapa.sort_values(['station_id', 'date'], ascending=False).groupby('station_id').first()
+df_mapa = df_mapa.sort_values(['station_id', 'date'], ascending=False)\
+                .groupby('station_id').first()
 print(df_mapa)
 # We build in plotly a scatterplot to observe the distribution of oil stations geographically
 fig = go.Figure(data=go.Scattergeo(

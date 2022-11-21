@@ -6,12 +6,11 @@ con.execute(
 )
 con.execute("DESCRIBE SELECT * FROM 'gas_prices';").fetchall()
 
-# 
-#stmt = """
-#    SELECT *
-#    FROM 'gas_prices'
-#    WHERE '2021-01-01' < date AND date < '2021-02-01' AND province_name == 'BALEARS (ILLES)'
-#"""
+# stmt = """
+#     SELECT *
+#     FROM 'gas_prices'
+#     WHERE '2021-01-01' < date AND date < '2021-02-01' AND province_name == 'MADRID'
+# """
 
 stmt = """
     SELECT *
@@ -22,6 +21,8 @@ stmt = """
 # Create DataFrame with the selected data
 
 df = con.execute(stmt).fetchdf()
+
+df['date']=df['date'].dt.strftime('%d%m%Y')
 
 # Initial data analysis and null values filling
 print('     ')
@@ -39,4 +40,4 @@ print('     ')
 
 # Download selected dataset into .csv
 
-##df.to_csv('datos.csv')
+df.to_csv('datos.csv')

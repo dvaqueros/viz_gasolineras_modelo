@@ -8,6 +8,7 @@ from itertools import product
 pio.renderers.default='browser'
 pd.options.display.max_columns = None
 datapath = './data/raw/*.parquet'
+seed = 123
 
 # Read data and fill Naj
 exec(open('src/read_data.py').read())
@@ -23,3 +24,7 @@ exec(open('src/mapa2.py').read())
 
 exec(open('src/lineas.py').read())
 exec(open('src/violin.py').read())
+
+# Execute Time Series Clustering
+product = "gasoline_95E5"
+exec(open('src/clustering_model.py').read())
