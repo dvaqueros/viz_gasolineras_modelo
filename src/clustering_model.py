@@ -12,7 +12,8 @@ from sklearn.model_selection import train_test_split
 # Algorithms
 from tslearn.clustering import TimeSeriesKMeans, KShape, silhouette_score
 from sklearn.metrics import accuracy_score,confusion_matrix
-
+#Save trained model
+import joblib  
 
 
 
@@ -39,41 +40,52 @@ print(f'Tipo X_train: {type(X_train)} Tipo y_train: {type(y_train)}')
 
 # Realizamos el modelo KMeans
 start_time = time.time()
-model_km = TimeSeriesKMeans(n_clusters = 3, metric = "dtw",
-                         max_iter = 10, random_state = seed).fit(X_train)
+model_km = TimeSeriesKMeans(n_clusters = 3, 
+                            metric = "euclidean",
+                            max_iter = 10, 
+                            random_state = seed).fit(X_train)
 
 labels_km = model_km.labels_
 
 print("--- %s seconds ---" % (time.time() - start_time))
 
-# Realizamos el modelo KShape
-start_time = time.time()
-model_ks = KShape(n_clusters=2, 
-                  verbose=True,
-                  n_init=10).fit(X_train)
+# # Realizamos el modelo KShape
+# start_time = time.time()
+# model_ks = KShape(n_clusters=3, 
+#                   verbose=True,
+#                   n_init=10).fit(X_train)
 
-labels_ks = model_ks.labels_
+# labels_ks = model_ks.labels_
 
-print("--- %s seconds ---" % (time.time() - start_time))
+# print("--- %s seconds ---" % (time.time() - start_time))
 
 
-silhouette_score(X_train, labels_km, metric="dtw") 
-silhouette_score(X_train, labels_ks, metric="euclidean") 
+# silhouette_score(X_train, labels_km, metric="euclidean") 
+# silhouette_score(X_train, labels_ks, metric="euclidean") 
 
 
 print('Training dataset accuracy for TimeSeriesKMeans clustering with dtw metric: ', accuracy_score(y_train, labels_km))
 
-print('Training dataset accuracy for KShape clustering: ', accuracy_score(y_train, labels_ks))
+# print('Training dataset accuracy for KShape clustering: ', accuracy_score(y_train, labels_ks))
 
 print('Test dataset accuracy for TimeSeriesKMeans clustering with dtw metric: ', accuracy_score(y_test, model_km.predict(X_test)))
 
-print('Test dataset accuracy for KShape clustering: ', accuracy_score(y_test, model_ks.predict(X_test)))
+# print('Test dataset accuracy for KShape clustering: ', accuracy_score(y_test, model_ks.predict(X_test)))
 
 confusion_matrix(y_train, labels_km)
-confusion_matrix(y_train, labels_ks)
+# confusion_matrix(y_train, labels_ks)
 
 confusion_matrix(y_test, model_km.predict(X_test))
-confusion_matrix(y_test, model_ks.predict(X_test))
+# confusion_matrix(y_test, model_ks.predict(X_test))
+
+joblib.dump(model_km, 'modelo_entrenado_KMeans.pkl') # Guardo el modelo.
+# joblib.dump(model_ks, 'modelo_entrenado_KShape.pkl') # Guardo el modelo.
+
+
+
+
+
+
 
 
 # def plot_groups(model):

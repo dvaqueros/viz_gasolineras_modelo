@@ -20,10 +20,10 @@ exec(open('src/dataset.py').read())
 exec(open('src/exploratory_analysis.py').read())
 
 # Execute Map Visualization
-exec(open('src/mapa2.py').read())
+# exec(open('src/mapa2.py').read())
 
-exec(open('src/lineas.py').read())
-exec(open('src/violin.py').read())
+# exec(open('src/lineas.py').read())
+# exec(open('src/violin.py').read())
 
 # Execute Time Series Clustering
 product = "gasoline_95E5"
