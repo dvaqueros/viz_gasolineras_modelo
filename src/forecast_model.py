@@ -38,10 +38,10 @@ import warnings
 
 # Preparación del dato
 # ==============================================================================
-datos['fecha'] = pd.to_datetime(datos['fecha'], format='%Y/%m/%d')
-datos = datos.set_index('fecha')
+df['date'] = pd.to_datetime(df['date'], format='%Y/%m/%d')
+datos = df.set_index('date')
 datos = datos.rename(columns={'x': 'y'})
-datos = datos.asfreq('MS')
+datos = datos.asfreq('MS') # Datos mensuales
 datos = datos.sort_index()
 datos.head()
 

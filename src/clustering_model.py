@@ -60,11 +60,11 @@ print("--- %s seconds ---" % (time.time() - start_time))
 # print("--- %s seconds ---" % (time.time() - start_time))
 
 
-# silhouette_score(X_train, labels_km, metric="euclidean") 
+silhouette_score(X_train, labels_km, metric="euclidean") 
 # silhouette_score(X_train, labels_ks, metric="euclidean") 
 
 
-print('Training dataset accuracy for TimeSeriesKMeans clustering with dtw metric: ', accuracy_score(y_train, labels_km))
+# print('Training dataset accuracy for TimeSeriesKMeans clustering with dtw metric: ', accuracy_score(y_train, labels_km))
 
 # print('Training dataset accuracy for KShape clustering: ', accuracy_score(y_train, labels_ks))
 

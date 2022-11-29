@@ -16,8 +16,11 @@ exec(open('src/read_data.py').read())
 # Prepare dataset
 exec(open('src/dataset.py').read())
 
+# We clean the data
+exec(open('src/data_adaptation.py').read())
+
 # Execute Exploratory Descriptive Analysis
-exec(open('src/exploratory_analysis.py').read())
+# exec(open('src/exploratory_analysis.py').read())
 
 # Execute Map Visualization
 # exec(open('src/mapa2.py').read())
@@ -27,4 +30,6 @@ exec(open('src/exploratory_analysis.py').read())
 
 # Execute Time Series Clustering
 product = "gasoline_95E5"
-exec(open('src/clustering_model.py').read())
+#exec(open('src/clustering_model.py').read())
+
+#exec(open('src/main_dash.py').read())

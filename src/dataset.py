@@ -1,5 +1,9 @@
 
 
+
+
+
+
 df_lineas = df.copy()
 #df_mapa = df_mapa.sort_values(['station_id', 'date'], ascending=False).groupby('station_id', as_index=False).first()
 
