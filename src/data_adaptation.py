@@ -97,7 +97,7 @@ df = df.drop(columns=['province_name',
 # train the different models.
 
 products = ["gasoline_95E5", 
-            "gasoline_95E5_premium ", 
+            "gasoline_95E5_premium",
             "gasoline_98E5",
             "gasoline_98E10",
             "diesel_A",
