@@ -27,7 +27,7 @@ products = ["gasoline_95E5",
 
 # Para no machacar el original
 df_parsed = df.copy()
-df_parsed=df_parsed.fillna(0)
+
 
 
 
@@ -138,10 +138,11 @@ df_parsed = pd.concat([df_parsed, sta_dates]).sort_index()
 df_parsed = df_parsed.reset_index()
 
 # Rellenamos los valores ausentes con la última observación disponible.
+#df_parsed.replace('0',np.nan)
 cols = list(df_parsed.columns)
 df_parsed[cols] = df_parsed.groupby('station_id')[cols].bfill()
 df_parsed[cols] = df_parsed.groupby('station_id')[cols].ffill()
-
+aa=df_parsed
 
 
 
