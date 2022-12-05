@@ -1,7 +1,9 @@
+import sys
+sys.path.append('src')
+import dictionaries
 
 
-
-import dash, logging
+import dash, logging, pickle
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
@@ -13,7 +15,23 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from PIL import Image
-import pickle
+
+
+def getDropdownDistritos():
+    distritos = [dbc.DropdownMenuItem(v, id=v+'_id') for v in dictionaries.list_distritos]
+    distritos.append(dbc.DropdownMenuItem(divider=True))
+    distritos.append(dbc.DropdownMenuItem("Todos", id='Todos_distritos'))
+
+    return distritos
+
+def getDistritos(distrito):
+
+    if distrito == 'Todos':
+        distritos = ['Arganzuela', 'Barajas', 'Carabanchel', 'Centro', 'Chamartin', 'Chamberi', 'Ciudad Lineal', 'Fuencarral-El Pardo', 'Hortaleza', 'Latina', 'Moncloa-Aravaca', 'Moratalaz', 'Puente de Vallecas', 'Retiro', 'Salamanca', 'San Blas', 'Tetuan', 'Usera', 'Vicalvaro', 'Villa de Vallecas', 'Villaverde']
+    else:
+        distritos = [distrito]
+    return distritos
+
 
 
 app = dash.Dash(suppress_callback_exceptions=False,
@@ -81,28 +99,19 @@ app.layout = dbc.Container(
             [
                 dbc.Col(
                     dbc.DropdownMenu(
+                        id='distritos-dd',
                         label="Distritos",
-                        children=
-                            [
-                                dbc.DropdownMenuItem("Action"),
-                                dbc.DropdownMenuItem("Another action"),
-                                dbc.DropdownMenuItem("Something else here"),
-                                dbc.DropdownMenuItem(divider=True),
-                                dbc.DropdownMenuItem("Todos"),
-                            ],
+                        children= getDropdownDistritos(),
                         align_end=False,
                     )
                 ),
                 dbc.Col(
                     dbc.DropdownMenu(
-                        label="Distritos",
+                        id='barrios-dd',
+                        label="Barrios",
                         children=
                         [
-                            dbc.DropdownMenuItem("Action"),
-                            dbc.DropdownMenuItem("Another action"),
-                            dbc.DropdownMenuItem("Something else here"),
-                            dbc.DropdownMenuItem(divider=True),
-                            dbc.DropdownMenuItem("Todos"),
+                            dbc.DropdownMenuItem("No hay distrito seleccionado")
                         ],
                         align_end=False,
                     )
@@ -115,6 +124,28 @@ app.layout = dbc.Container(
     ],
     fluid=True
 )
+
+@app.callback(
+    Output("barrios-dd", "children"),
+    [Input(v+'_id', 'n_clicks') for v in list_distritos],
+)
+def barriosDeDistrito(*args):
+    ctx = dash.callback_context
+
+    if not ctx.triggered:
+        button_id = "all"
+    else:
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+    if button_id in ["red", "blue", "green"]:
+        df = data.loc[data["color"] == button_id, :]
+    elif button_id in ["square", "circle"]:
+        df = data.loc[data["shape"] == button_id, :]
+    else:
+        df = data
+
+    return go.Figure(data=[go.Pie(labels=df["item"], values=df["qty"])])
+
 
 
 if __name__ == "__main__":

@@ -178,3 +178,33 @@ products_titles = {
     "lng"                   : "LNG",
     "hydrogen"              : "hidrógeno"}
 
+
+
+dict_district_neigh = {
+    'Arganzuela' : ['Acacias','Chopera','Embajadores','Imperial','Palacio','Palos de Moguer'],
+    'Barajas': ['Aeropuerto','Casco Histórico de Barajas','Corralejos'],
+    'Carabanchel': ['Abrantes','Buenavista','Comillas','Opañel','San Isidro','Zofío'],
+    'Centro' : ['Arapiles','Universidad'],
+    'Chamartin': ['Castilla','Ciudad Jardín','El Viso','Hispanoamérica','Nueva España','Prosperidad'],
+    'Chamberi': ['Almagro','Rios Rosas','Trafalgar','Vallehermoso'],
+    'Ciudad Lineal': ['Apostol Santiago','Colina','Concepción','Pueblo Nuevo','Quintana','San Juan Bautista','San Pascual','Simancas','Ventas'],
+    'Fuencarral-El Pardo': ['El Goloso','El Pardo','La Paz','Mirasierra','Peñagrande','Valverde'],
+    'Hortaleza': ['Canillas','Corralejos','Pinar del Rey','Piovera','Timón','Valdefuentes'],
+    'Latina': ['Aguilas','Aluche','Cuatro Vientos','Lucero'],
+    'Moncloa-Aravaca': ['Aluche','Argüelles','Berruguete','Ciudad Universitaria','El Plantío','Valdezarza'],
+    'Moratalaz': ['Marroquina','Media Legua','Vinateros'],
+    'Puente de Vallecas': ['Entrevías','Numancia','Palomeras Bajas','Palomeras Sureste','San Diego','Valdebernardo'],
+    'Retiro': ['Estrella','Pacífico'],
+    'Salamanca': ['El Viso','Fuente del Berro','Guindalera','Prosperidad','Recoletos'],
+    'San Blas': ['Amposta','Arcos','Rejas','Rosas','Simancas'],
+    'Tetuan': ['Almenara','Berruguete','Castilla','Castillejos'],
+    'Usera': ['Almendrales','Orcasitas','Orcasur','Pradolongo','San Fermín'],
+    'Vicalvaro': ['Casco histórico de Vicálvaro','Valdebernardo'],
+    'Villa de Vallecas': ['Casco Histórico de Vallecas','Casco histórico de Vicálvaro','Ensanche de Vallecas'],
+    'Villaverde': ['Butarque','Los Angeles','Los Rosales','San Fermín','Villaverde Alto', 'Casco Histórico de Villaverde']
+}
+
+list_distritos=['Arganzuela', 'Barajas', 'Carabanchel', 'Centro', 'Chamartin', 'Chamberi', 'Ciudad Lineal', 'Fuencarral-El Pardo', 'Hortaleza', 'Latina', 'Moncloa-Aravaca', 'Moratalaz', 'Puente de Vallecas', 'Retiro', 'Salamanca', 'San Blas', 'Tetuan', 'Usera', 'Vicalvaro', 'Villa de Vallecas', 'Villaverde']
+
+
+

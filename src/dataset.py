@@ -194,7 +194,7 @@ pickle.dump(df_parsed, open("data/output/df_parsed", "wb"))
 
 print('dataset fin')
 
-
+df_parsed.groupby(['district', 'neighbourhood'], as_index=False).first()[['district', 'neighbourhood']].to_csv('~/hola.csv')
 
 
 # df_gasoline_95E5         = df_parsed[df_parsed['gasoline_95E5'] != 0]
