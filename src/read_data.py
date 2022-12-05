@@ -16,6 +16,5 @@ stmt = """
 """
 
 # Create DataFrame with the selected data
-
 df = con.execute(stmt).fetchdf()
 

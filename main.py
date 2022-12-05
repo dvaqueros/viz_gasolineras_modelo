@@ -14,11 +14,14 @@ seed = 123
 # Read data
 exec(open('src/read_data.py').read())
 
+# Create dictionaries
+exec(open('src/dictionaries.py').read())
+
+# Create dictionaries
+exec(open('src/geojsons.py').read())
+
 # Prepare dataset
 exec(open('src/dataset.py').read())
-
-# We clean the data
-#exec(open('src/data_adaptation.py').read())
 
 # Execute Exploratory Descriptive Analysis
 # exec(open('src/exploratory_analysis.py').read())
