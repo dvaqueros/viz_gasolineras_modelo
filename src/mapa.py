@@ -2,46 +2,37 @@
 
 import plotly.graph_objects as go
 
-df_mapa = df.copy()
-df_mapa = df_mapa.sort_values(['station_id', 'date'], ascending=False)\
-                .groupby('station_id').first()
-print(df_mapa)
-# We build in plotly a scatterplot to observe the distribution of oil stations geographically
-fig = go.Figure(data=go.Scattergeo(
-        locationmode = 'country names',
-        lon = df_mapa['longitude'],
-        lat = df_mapa['latitude'],
-        #text = df['text'],
-        mode = 'markers',
-        marker = dict(
-            size = 8,
-            opacity = 0.8,
-            reversescale = True,
-            autocolorscale = False,
-            symbol = 'octagon',
-            line = dict(
-                width=1,
-                color='rgba(102, 102, 102)'
-            ),
-            
-        )))
+#Hago copia para no cargarme el original
+df_mapa = df_parsed.copy()
+#Voy a coger la ultima fecha de cada gasolinera para solo pintar un punto
+df_mapa = df_mapa.sort_values(['station_id', 'date'], ascending=False).groupby('station_id', as_index=False).first()
 
-fig.update_layout(
-        title = 'Gasolina',
-        geo = dict(
-            scope='europe',
-            #projection_type='albers',
-            resolution = 50,
-            fitbounds='locations',
-            showland = True,
-            #landcolor = "rgb(250, 250, 250)",
-            countrywidth = 0.5,
-            subunitwidth = 0.5,
-            showcountries=True,
-            countrycolor="Black",
-            showsubunits=False, 
-            subunitcolor="Black")
-    )
+#Necesario para algunas funciones de Scattermapbox
+mapbox_access_token = 'pk.eyJ1IjoiZWlzZW5oZXJyIiwiYSI6ImNsYXByaWNqajEzOHAzeG4wYTV6NDZ4aDIifQ.oGCZPVxl5y6Zyg8MJWTypQ'
+
+fig = go.Figure()
+for name in list(name_colors.keys()):
+    df_mapa_1 = df_mapa[df_mapa['name_parsed']==name]
+    fig.add_trace(go.Scattermapbox(
+        name=name,
+        mode="markers+text",
+        lat=df_mapa_1["latitude"], lon=df_mapa_1["longitude"],  # color="black", size=3,
+        marker=go.scattermapbox.Marker(
+                size=8,
+                #symbol="fuel",
+                symbol="circle",
+                color=name_colors[name],
+                opacity=0.7)
+        ))
+fig.update_layout(mapbox_style="open-street-map",
+                  margin={"r":0,"t":0,"l":0,"b":0},
+                  mapbox=dict(accesstoken=mapbox_access_token,
+                              center=dict(lat=40.42, lon=-3.72),
+                              style='light',
+                              zoom=10))
+
+
+
 
 fig.show()
 
