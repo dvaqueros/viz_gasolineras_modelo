@@ -1,9 +1,12 @@
 import sys
-sys.path.append('src')
+sys.path.append('src/')
 import dictionaries
+import mapa
 
+import time, datetime
 
-import dash, logging, pickle
+import pickle
+import dash, logging
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
@@ -17,11 +20,34 @@ import plotly.express as px
 from PIL import Image
 
 
-def getDropdownDistritos():
-    distritos = [dbc.DropdownMenuItem(v, id=v+'_id') for v in dictionaries.list_distritos]
-    distritos.append(dbc.DropdownMenuItem(divider=True))
-    distritos.append(dbc.DropdownMenuItem("Todos", id='Todos_distritos'))
+#####
+# https://stackoverflow.com/questions/51063191/date-slider-with-plotly-dash-does-not-work
 
+
+
+
+#######
+
+# Importamos los datos para cada combustible
+with open("data/output/diccionario_df_productos", 'rb') as f:
+    dict_df_products = pickle.load(f)
+
+# Importamos los datos ya procesados
+with open("data/output/df_parsed", 'rb') as f:
+    df_parsed = pickle.load(f)
+
+# Importamos los datos ya procesados
+with open("data/output/madrid-city", 'rb') as f:
+    city_border = pickle.load(f)
+
+df=df_parsed.copy()
+
+def getDropdownDistritos():
+    #distritos = [dbc.DropdownMenuItem(v, id=v+'_id') for v in dictionaries.list_distritos]
+    #distritos.append(dbc.DropdownMenuItem(divider=True))
+    #distritos.append(dbc.DropdownMenuItem("Todos", id='Todos_distritos'))
+    distritos = dictionaries.list_distritos
+    distritos.insert(0, "Todos")
     return distritos
 
 def getDistritos(distrito):
@@ -31,6 +57,20 @@ def getDistritos(distrito):
     else:
         distritos = [distrito]
     return distritos
+
+
+def filtrarDF(distrito):
+
+    if distrito == 'Todos':
+        distritos = ['Arganzuela', 'Barajas', 'Carabanchel', 'Centro', 'Chamartin', 'Chamberi', 'Ciudad Lineal', 'Fuencarral-El Pardo', 'Hortaleza', 'Latina', 'Moncloa-Aravaca', 'Moratalaz', 'Puente de Vallecas', 'Retiro', 'Salamanca', 'San Blas', 'Tetuan', 'Usera', 'Vicalvaro', 'Villa de Vallecas', 'Villaverde']
+    else:
+        distritos = [distrito]
+    return distritos
+
+
+def getTabContent():
+    fig=mapa.crearMapaScatter(df, city_border)
+    return fig
 
 
 
@@ -68,6 +108,19 @@ app.layout = dbc.Container(
                             "color": "black",
                         }
                 ),
+                dcc.DatePickerRange(
+                    id='date-picker',
+                    min_date_allowed=min(df_parsed['date']),
+                    max_date_allowed=max(df_parsed['date']),
+                    start_date=min(df_parsed['date']),
+                    end_date=max(df_parsed['date']),
+                    style=
+                        {
+                            "text-align":"center",
+                            "width": "100%",
+                            "margin-top": "1%",
+                        }
+                )
 
             ]#,
                 #width={"size": 8},
@@ -98,53 +151,101 @@ app.layout = dbc.Container(
         dbc.Row(
             [
                 dbc.Col(
-                    dbc.DropdownMenu(
-                        id='distritos-dd',
-                        label="Distritos",
-                        children= getDropdownDistritos(),
-                        align_end=False,
+                    dcc.Dropdown(
+                        id="district-dd",
+                        options= getDropdownDistritos(),
+                        placeholder="Distrito",
                     )
                 ),
                 dbc.Col(
-                    dbc.DropdownMenu(
-                        id='barrios-dd',
-                        label="Barrios",
-                        children=
-                        [
-                            dbc.DropdownMenuItem("No hay distrito seleccionado")
-                        ],
-                        align_end=False,
+                    dcc.Dropdown(
+                        id="barrios-dd",
+                        options=["Seleccione distrito"],
+                        placeholder="Barrio",
                     )
                 )
             ],
             id="row-dropdown-distritos"
-        )
+        ),
+        html.Br(),
 
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dbc.Tabs([
+                            dbc.Tab(label="95E5",         tab_id="id_gasoline_95E5"),
+                            dbc.Tab(label="95E5 Premium", tab_id="id_gasoline_95E5_premium"),
+                            dbc.Tab(label="98E5",         tab_id="id_gasoline_98E5"),
+                            dbc.Tab(label="98E10",        tab_id="id_gasoline_98E10"),
+                            dbc.Tab(label="Diesel A",              tab_id="id_diesel_A"),
+                            dbc.Tab(label="Diesel B",              tab_id="id_diesel_B"),
+                            dbc.Tab(label="Diesel Premium",        tab_id="id_diesel_premium"),
+                            dbc.Tab(label="Bioetanol",             tab_id="id_bioetanol"),
+                            dbc.Tab(label="Biodiesel",             tab_id="id_biodiesel"),
+                            dbc.Tab(label="LPG",                   tab_id="id_lpg"),
+                            dbc.Tab(label="CNG",                   tab_id="id_cng"),
+                            dbc.Tab(label="LNG",                   tab_id="id_lng"),
+                            dbc.Tab(label="Hidrógeno",             tab_id="id_hydrogen"),
+                            dbc.Tab(label="Comparativa",           tab_id="id_comparativa")
+                        ],
+                            id="tabs",
+                            active_tab="95E5",
+                            style=
+                                {
+                                    "text-align":"center",
+                                    "width": "100%",
+                                    "margin-top": "1%",
+                                }
+                        ),
+                        html.Div(id='tabs-content',
+                                 children=
+                                    [
+                                        dbc.Card(
+                                            dbc.CardBody([
+                                                dcc.Graph(id="subplot-profitability",
+                                                          figure=getTabContent(),
+                                                          style={'width': '100%', 'height': '100%'})
+                                            ]),
+                                        )
+                                    ]
+                                 )
+                    ],
+                    style=
+                        {
+                            "text-align":"center",
+                            "width": "100%",
+                        }
+                )
+            ]
+        ),
+        html.Br(),
 
     ],
     fluid=True
 )
 
-@app.callback(
-    Output("barrios-dd", "children"),
-    [Input(v+'_id', 'n_clicks') for v in list_distritos],
+@app.callback( # Barrios por distrito dd
+    Output("barrios-dd", "options"),
+    Input("district-dd", 'value')
 )
-def barriosDeDistrito(*args):
-    ctx = dash.callback_context
-
-    if not ctx.triggered:
-        button_id = "all"
+def barriosDeDistrito(distrito):
+    if distrito != 'Todos':
+        return dictionaries.dict_district_neigh[distrito]
     else:
-        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        return ["Seleccione distrito"]
 
-    if button_id in ["red", "blue", "green"]:
-        df = data.loc[data["color"] == button_id, :]
-    elif button_id in ["square", "circle"]:
-        df = data.loc[data["shape"] == button_id, :]
-    else:
-        df = data
+@app.callback( #Fechas slider
+    Output("fecha_init", "children"),
+    Output("fecha_end", "children"),
+    Input("slider-fechas", 'value'),
+)
+def fechasInitEndSlider(min_max_date):
+    print(min_max_date)
+    return [min_max_date[0].strftime("%Y-%m-%d"),
+            min_max_date[1].strftime("%Y-%m-%d"),]
 
-    return go.Figure(data=[go.Pie(labels=df["item"], values=df["qty"])])
+
 
 
 
@@ -156,3 +257,4 @@ if __name__ == "__main__":
 
 
 
+#exec(open('src/dash_main.py').read())

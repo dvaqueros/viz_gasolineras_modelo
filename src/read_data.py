@@ -1,4 +1,5 @@
 import duckdb
+from main import *
 
 # Leemos los datos que originalmente estaban en el parquet con duckdb. Los pasamos a un dataframe.
 # Nos quedamos solo con la ciudad de Madrid desde 2021.
