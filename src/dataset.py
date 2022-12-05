@@ -181,6 +181,7 @@ df_parsed['name_parsed'] = df_parsed['name'].map(name_dict)
 # Creamos nueva columna con el número distintos de combustibles que tiene cada gasolinera.
 df_parsed['num_combustibles'] = df_parsed[products].astype(bool).sum(axis=1)
 
+df_parsed= df_parsed.fillna(0)
 # Separamos el dataset en función de los tipos de producto que ofrecen las gasolineras.
 # Eliminamos las observaciones que no contienen sendos productos.
 dict_df_products = {}
@@ -195,7 +196,7 @@ print('dataset fin')
 
 
 
-# df_parsed= df_parsed.fillna(0)
+
 # df_gasoline_95E5         = df_parsed[df_parsed['gasoline_95E5'] != 0]
 # df_gasoline_95E5_premium = df_parsed[df_parsed['gasoline_95E5_premium'] != 0]
 # df_gasoline_98E5         = df_parsed[df_parsed['gasoline_98E5'] != 0]
