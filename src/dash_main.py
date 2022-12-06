@@ -39,8 +39,8 @@ with open("data/output/df_parsed", 'rb') as f:
 with open("data/output/madrid-city", 'rb') as f:
     city_border = pickle.load(f)
 
-dict_df=dict_df_products.copy()
-df=df_parsed.copy()
+#dict_df=dict_df_products.copy()
+#df=df_parsed.copy()
 product="gasoline_95E5"
 
 def getDropdownDistritos():
@@ -51,26 +51,27 @@ def getDropdownDistritos():
     distritos.insert(0, "Todos")
     return distritos
 
-def getDistritos(distrito):
 
-    if distrito == 'Todos':
-        distritos = ['Arganzuela', 'Barajas', 'Carabanchel', 'Centro', 'Chamartin', 'Chamberi', 'Ciudad Lineal', 'Fuencarral-El Pardo', 'Hortaleza', 'Latina', 'Moncloa-Aravaca', 'Moratalaz', 'Puente de Vallecas', 'Retiro', 'Salamanca', 'San Blas', 'Tetuan', 'Usera', 'Vicalvaro', 'Villa de Vallecas', 'Villaverde']
-    else:
-        distritos = [distrito]
-    return distritos
-
-
-def filtrarDF(producto):#, distrito, barrio):
-
+def filtrarDF(producto, distrito):#, barrio):
+    print(distrito)
     if producto == 'comparativa':
-        return df
+        with open("data/output/df_parsed", 'rb') as f:
+            df_parsed = pickle.load(f)
+        return_df = df_parsed
     else:
-        return dict_df[producto]
+        with open("data/output/diccionario_df_productos", 'rb') as f:
+            dict_df_products = pickle.load(f)
+        return_df = dict_df_products[producto]
+
+    if distrito != 'Todos':
+        return_df = return_df[return_df['district']==distrito]
+
+    return return_df
 
 
-def getMapa(id, prod):#, distrito, barrio):
+def getMapa(id, prod, distrito):#, barrio):
     #print(id)
-    df=filtrarDF(prod)#,  distrito, barrio)
+    df=filtrarDF(prod, distrito)#, barrio)
     if id == 'id_Localizacion':
         fig=mapa.crearMapaScatter(df, city_border)
     elif id == 'id_Densidad':
@@ -80,12 +81,14 @@ def getMapa(id, prod):#, distrito, barrio):
 
     return fig
 
-def getPie():
+def getPie(prod, distrito):
+    df = filtrarDF(prod, distrito)  # , barrio)
     fig=pie.crearPie(df)
     return fig
 
-def getViolinEmpresas():
-    fig=violin.crearViolinEmpresas(df, product)
+def getViolinEmpresas(prod, distrito):
+    df = filtrarDF(prod, distrito)  # , barrio)
+    fig=violin.crearViolinEmpresas(df, prod)
     return fig
 
 
@@ -219,46 +222,51 @@ app.layout = dbc.Container(
                                     }
                             )
                         ),
+                        html.Br(),
+                        html.Br(),
                         dbc.Row(
-                            html.Div(
-                                id='divPlotMap',
-                                children=
-                                    [
-                                        html.H3("Mapa con la distribución de las gasolinearas por empresa"),
-                                        dbc.Card(
-                                            [
-                                                dbc.Row(
-                                                    dbc.Tabs(
-                                                        [
-                                                            dbc.Tab(label="Localizacion",  tab_id="id_Localizacion"),
-                                                            dbc.Tab(label="Densidad",      tab_id="id_Densidad"),
-                                                            dbc.Tab(label="Precio",        tab_id="id_Precio"),
-                                                        ],
-                                                        id="tab_mapas",
-                                                        active_tab="id_Localizacion",
-                                                        style=
-                                                            {
-                                                                "text-align":"center",
-                                                                "width": "100%",
-                                                                "margin-top": "1%",
-                                                                "font-size": "80%",
-                                                            }
-                                                    )
+                            [
+                                html.Div(
+                                    id='divPlotMap',
+                                    children=
+                                        [
+                                            html.H3("Mapas"),
+                                            dbc.Card(
+                                                [
+                                                    dbc.Row(
+                                                        dbc.Tabs(
+                                                            [
+                                                                dbc.Tab(label="Localizacion",  tab_id="id_Localizacion"),
+                                                                dbc.Tab(label="Densidad",      tab_id="id_Densidad"),
+                                                                dbc.Tab(label="Precio",        tab_id="id_Precio"),
+                                                            ],
+                                                            id="tab_mapas",
+                                                            active_tab="id_Localizacion",
+                                                            style=
+                                                                {
+                                                                    "text-align":"center",
+                                                                    "width": "100%",
+                                                                    "margin-top": "1%",
+                                                                    "font-size": "80%",
+                                                                }
+                                                        )
 
-                                                ),
-                                                dbc.Row(
-                                                    dbc.CardBody(
-                                                        [
-                                                                dcc.Graph(id="plotMap",
-                                                                      figure=getMapa("id_Localizacion", "comparativa"),
-                                                                      style={'width': '100%', 'height': '100%'}),
-                                                        ]
                                                     ),
-                                                )
-                                            ]
-                                        ),
-                                    ]
-                            )
+                                                    dbc.Row(
+                                                        dbc.CardBody(
+                                                            [
+                                                                    dcc.Graph(id="plotMap",
+                                                                          figure=getMapa("id_Localizacion", "comparativa", 'Todos'),
+                                                                          style={'width': '100%', 'height': '100%'}),
+                                                            ]
+                                                        ),
+                                                    )
+                                                ],
+                                                class_name='border-0'
+                                            ),
+                                        ]
+                                )
+                            ]
                         ),
                         dbc.Row(
                             html.Div(
@@ -269,7 +277,7 @@ app.layout = dbc.Container(
                                          dbc.Card(
                                              dbc.CardBody([
                                                  dcc.Graph(id="plotPie",
-                                                           figure=getPie(),
+                                                           figure=getPie("comparativa", 'Todos'),
                                                            style={'width': '100%', 'height': '100%'}
                                                            )
                                              ]),
@@ -286,7 +294,7 @@ app.layout = dbc.Container(
                                          dbc.Card(
                                              dbc.CardBody([
                                                  dcc.Graph(id="plotViolinEmpresas",
-                                                           figure=getViolinEmpresas(),
+                                                           figure=getViolinEmpresas("comparativa", 'Todos'),
                                                            style={'width': '100%', 'height': '100%'}
                                                            )
                                              ]),
@@ -333,13 +341,17 @@ def fechasInitEndSlider(min_max_date):
 
 @app.callback( #Mapa a mostrara
     Output("plotMap", "figure"),
+    Output("plotPie", "figure"),
+    Output("plotViolinEmpresas", "figure"),
     Input("tab_mapas", 'active_tab'),
     Input("tab_products", 'active_tab'),
-    #Input("district-dd", 'value'),
+    Input("district-dd", 'value'),
     #Input("barrio-dd", 'value'),
 )
-def selectTabMap(active_tab_map, active_tab_prod):#, distrito, barrio):
-    return getMapa(active_tab_map, active_tab_prod)#, distrito, barrio)
+def selectTabMap(active_tab_map, active_tab_prod, distrito):#, barrio):
+    return [getMapa(active_tab_map, active_tab_prod, distrito),#, barrio)
+            getPie(active_tab_prod, distrito),
+            getViolinEmpresas(active_tab_prod, distrito)]
 
 
 
