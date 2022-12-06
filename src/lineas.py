@@ -21,7 +21,8 @@ def crearLineas(df_lineas, product):
                           "date": "Fecha",
                           "variable": "Combustible"
                       },
-                      title='Serie temporal del precio de ' + product)
+                      #title='Serie temporal del precio de ' + product
+                      )
 
         fig.update_traces(mode="markers+lines", hovertemplate=None)
         fig.update_layout(hovermode="x")

@@ -85,9 +85,9 @@ def getMapa(id, prod, distrito, start_date, end_date, barrio):
     if id == 'id_Localizacion':
         fig = mapa.crearMapaScatter(df)
     elif id == 'id_Densidad':
-        print(distrito)
-        print(barrio)
-        print(df[['district','neighbourhood']])
+        # print(distrito)
+        # print(barrio)
+        # print(df[['district','neighbourhood']])
         fig = mapaDensidad.crearMapaDensidad(df)
     else:
         fig = mapaPrecio.crearMapaPrecio(df, prod)
@@ -290,12 +290,13 @@ app.layout = dbc.Container(
                                 )
                             ]
                         ),
+                        html.Br(),
                         dbc.Row(
                             html.Div(
                                 id='divPlotPie',
                                 children=
                                      [
-                                         html.H3("Mapa con la distribución de las gasolinearas por empresa"),
+                                         html.H3("Cuota del total de gasolineras por empresa"),
                                          dbc.Card(
                                              dbc.CardBody([
                                                  dcc.Graph(id="plotPie",
@@ -303,16 +304,19 @@ app.layout = dbc.Container(
                                                            style={'width': '100%', 'height': '100%'}
                                                            )
                                              ]),
+                                             class_name='border-0'
                                          ),
+
                                      ]
                             )
                         ),
+                        html.Br(),
                         dbc.Row(
                             html.Div(
                                 id='divPlotViolinEmpresas',
                                 children=
                                      [
-                                         html.H3("Mapa con la distribución de las gasolinearas por empresa"),
+                                         html.H3("Distribución del precio"),
                                          dbc.Card(
                                              dbc.CardBody([
                                                  dcc.Graph(id="plotViolinEmpresas",
@@ -320,16 +324,18 @@ app.layout = dbc.Container(
                                                            style={'width': '100%', 'height': '100%'}
                                                            )
                                              ]),
+                                             class_name='border-0'
                                          ),
                                      ]
                             )
                         ),
+                        html.Br(),
                         dbc.Row(
                             html.Div(
                                 id='divPlotLineas',
                                 children=
                                      [
-                                         html.H3("Mapa con la distribución de las gasolinearas por empresa"),
+                                         html.H3("Evolución del precio"),
                                          dbc.Card(
                                              dbc.CardBody([
                                                  dcc.Graph
@@ -339,6 +345,7 @@ app.layout = dbc.Container(
                                                         style={'width': '100%', 'height': '100%'}
                                                     )
                                              ]),
+                                             class_name='border-0'
                                          ),
                                      ]
                             )
