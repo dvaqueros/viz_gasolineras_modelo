@@ -6,6 +6,7 @@ import mapaDensidad
 import mapaPrecio
 import pie
 import violin
+import lineas
 
 
 import time, datetime
@@ -52,8 +53,10 @@ def getDropdownDistritos():
     return distritos
 
 
-def filtrarDF(producto, distrito):#, barrio):
+def filtrarDF(producto, distrito, start_date, end_date):#, barrio):
     print(distrito)
+
+
     if producto == 'comparativa':
         with open("data/output/df_parsed", 'rb') as f:
             df_parsed = pickle.load(f)
@@ -63,15 +66,19 @@ def filtrarDF(producto, distrito):#, barrio):
             dict_df_products = pickle.load(f)
         return_df = dict_df_products[producto]
 
-    if distrito != 'Todos':
-        return_df = return_df[return_df['district']==distrito]
+    if len(return_df):
+        if distrito != 'Todos':
+            return_df = return_df[return_df['district']==distrito]
+
+    if len(return_df):
+        return_df = return_df[(return_df['date']>= start_date) & (return_df['date']<= end_date)]
 
     return return_df
 
 
-def getMapa(id, prod, distrito):#, barrio):
+def getMapa(id, prod, distrito, start_date, end_date):#, barrio):
     #print(id)
-    df=filtrarDF(prod, distrito)#, barrio)
+    df=filtrarDF(prod, distrito, start_date, end_date)#, barrio)
     if id == 'id_Localizacion':
         fig = mapa.crearMapaScatter(df, distrito)
     elif id == 'id_Densidad':
@@ -83,14 +90,19 @@ def getMapa(id, prod, distrito):#, barrio):
 
 
 
-def getPie(prod, distrito):
-    df = filtrarDF(prod, distrito)  # , barrio)
+def getPie(prod, distrito, start_date, end_date):
+    df = filtrarDF(prod, distrito, start_date, end_date)  # , barrio)
     fig=pie.crearPie(df)
     return fig
 
-def getViolinEmpresas(prod, distrito):
-    df = filtrarDF(prod, distrito)  # , barrio)
+def getViolinEmpresas(prod, distrito, start_date, end_date):
+    df = filtrarDF(prod, distrito, start_date, end_date)  # , barrio)
     fig=violin.crearViolinEmpresas(df, prod)
+    return fig
+
+def getLineas(prod, distrito, start_date, end_date):
+    df = filtrarDF(prod, distrito, start_date, end_date)  # , barrio)
+    fig=lineas.crearLineas(df, prod)
     return fig
 
 
@@ -211,10 +223,10 @@ app.layout = dbc.Container(
                                     dbc.Tab(label="CNG",              style={'padding': '0'},     tab_id="cng"),
                                     dbc.Tab(label="LNG",              style={'padding': '0'},     tab_id="lng"),
                                     #dbc.Tab(label="Hidrógeno",        style={'padding': '0'},     tab_id="hydrogen"),
-                                    dbc.Tab(label="Comparativa",      style={'padding': '0'},     tab_id="comparativa")
+                                    #dbc.Tab(label="Comparativa",      style={'padding': '0'},     tab_id="comparativa")
                                 ],
                                 id="tab_products",
-                                active_tab="comparativa",
+                                active_tab="gasoline_95E5",
                                 style=
                                     {
                                         "text-align":"center",
@@ -258,7 +270,7 @@ app.layout = dbc.Container(
                                                         dbc.CardBody(
                                                             [
                                                                     dcc.Graph(id="plotMap",
-                                                                          figure=getMapa("id_Densidad", "comparativa", 'Todos'),
+                                                                          figure=getMapa("id_Densidad", "gasoline_95E5", 'Todos', min(df_parsed_1['date']), max(df_parsed_1['date'])),
                                                                           style={'width': '100%', 'height': '100%'}),
                                                             ]
                                                         ),
@@ -279,7 +291,7 @@ app.layout = dbc.Container(
                                          dbc.Card(
                                              dbc.CardBody([
                                                  dcc.Graph(id="plotPie",
-                                                           figure=getPie("comparativa", 'Todos'),
+                                                           figure=getPie("gasoline_95E5", 'Todos', min(df_parsed_1['date']), max(df_parsed_1['date'])),
                                                            style={'width': '100%', 'height': '100%'}
                                                            )
                                              ]),
@@ -296,9 +308,28 @@ app.layout = dbc.Container(
                                          dbc.Card(
                                              dbc.CardBody([
                                                  dcc.Graph(id="plotViolinEmpresas",
-                                                           figure=getViolinEmpresas("comparativa", 'Todos'),
+                                                           figure=getViolinEmpresas("gasoline_95E5", 'Todos',  min(df_parsed_1['date']), max(df_parsed_1['date'])),
                                                            style={'width': '100%', 'height': '100%'}
                                                            )
+                                             ]),
+                                         ),
+                                     ]
+                            )
+                        ),
+                        dbc.Row(
+                            html.Div(
+                                id='divPlotLineas',
+                                children=
+                                     [
+                                         html.H3("Mapa con la distribución de las gasolinearas por empresa"),
+                                         dbc.Card(
+                                             dbc.CardBody([
+                                                 dcc.Graph
+                                                    (
+                                                        id="plotLineas",
+                                                        figure=getLineas("gasoline_95E5", 'Todos',  min(df_parsed_1['date']), max(df_parsed_1['date'])),
+                                                        style={'width': '100%', 'height': '100%'}
+                                                    )
                                              ]),
                                          ),
                                      ]
@@ -345,15 +376,19 @@ def fechasInitEndSlider(min_max_date):
     Output("plotMap", "figure"),
     Output("plotPie", "figure"),
     Output("plotViolinEmpresas", "figure"),
+    Output("plotLineas", "figure"),
     Input("tab_mapas", 'active_tab'),
     Input("tab_products", 'active_tab'),
     Input("district-dd", 'value'),
+    Input('date-picker', 'start_date'),
+    Input('date-picker', 'end_date')
     #Input("barrio-dd", 'value'),
 )
-def selectTabMap(active_tab_map, active_tab_prod, distrito):#, barrio):
-    return [getMapa(active_tab_map, active_tab_prod, distrito),#, barrio)
-            getPie(active_tab_prod, distrito),
-            getViolinEmpresas(active_tab_prod, distrito)]
+def selectTabMap(active_tab_map, active_tab_prod, distrito, start_date, end_date):#, barrio):
+    return [getMapa(active_tab_map, active_tab_prod, distrito, start_date, end_date),#, barrio)
+            getPie(active_tab_prod, distrito, start_date, end_date),
+            getViolinEmpresas(active_tab_prod, distrito, start_date, end_date),
+            getLineas(active_tab_prod, distrito, start_date, end_date)]
 
 
 

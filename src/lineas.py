@@ -1,14 +1,27 @@
+import plotly.express as px
+from dictionaries import *
+import plotly.graph_objects as go
 
-#Hago copia para no cargarme el original
-df_lineas = df.copy()
-df_lineas = df_lineas[['date', 'gasoline_95E5', 'diesel_A']]
-#Voy a coger la ultima fecha de cada gasolinera para solo pintar un punto
-df_lineas = df_lineas.groupby(['date'], group_keys=True).mean().reset_index()
+def crearLineas(df_lineas, product):
+    fig = go.Figure()
+    if len(df_lineas):
+        print(product)
+        print(df_lineas)
+        # Realizamos una media por fecha del precio del combustible en todas las gasolineras.
+        df_lineas = df_lineas.groupby(['date'], group_keys=True).mean().reset_index()
 
-print(df_lineas)
-fig = px.line(df_lineas, x='date', y=['gasoline_95E5', 'diesel_A'])
+        fig = px.line(df_lineas,
+                      x='date',
+                      y=[product],
+                      color_discrete_sequence=[palette[0]],
+                      labels={
+                          "value": "Precio medio (€)",
+                          "date": "Fecha",
+                          "variable": "Combustible"
+                      },
+                      title='Serie temporal del precio de ' + product)
 
-# Show plot
-fig.show()
+        fig.update_traces(mode="markers+lines", hovertemplate=None)
+        fig.update_layout(hovermode="x")
 
-
+    return fig
