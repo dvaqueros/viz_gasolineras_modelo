@@ -37,16 +37,16 @@ palette =["#f44336",
 products = ["gasoline_95E5",
             "gasoline_95E5_premium",
             "gasoline_98E5",
-            "gasoline_98E10",
+            #"gasoline_98E10",
             "diesel_A",
             "diesel_B",
             "diesel_premium",
-            "bioetanol",
+            #"bioetanol",
             "biodiesel",
             "lpg",
             "cng",
-            "lng",
-            "hydrogen"]
+            "lng"]
+            #"hydrogen"]
 
 # Nombres de las columnas de los precios ajustados de las columnas
 products_adj = [x + '_adj' for x in products]

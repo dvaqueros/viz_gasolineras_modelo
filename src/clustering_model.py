@@ -37,7 +37,7 @@ for producto in products:
     dict_df_products_clustering[producto]=dict_df_products_clustering[producto].drop(columns=columnas_clust_drop)
 
 
-for producto in [products[0]]:
+for producto in products:
     #print(producto)
     mySeries = []
     namesOfMySeries = []
@@ -66,49 +66,49 @@ for producto in [products[0]]:
 
 
     # Little handy function to plot series
-    def plot_som_series_averaged_center(som_x, som_y, win_map):
-        fig, axs = plt.subplots(som_x, som_y, figsize=(5, 5))
-        fig.suptitle('Clusters')
-        for x in range(som_x):
-            for y in range(som_y):
-                cluster = (x, y)
-                if cluster in win_map.keys():
-                    for series in win_map[cluster]:
-                        axs[cluster].plot(series, c="gray", alpha=0.5)
-                    axs[cluster].plot(np.average(np.vstack(win_map[cluster]), axis=0), c="red")
-                cluster_number = x * som_y + y + 1
-                axs[cluster].set_title(f"Cluster {cluster_number}")
-
-        plt.show()
+    # def plot_som_series_averaged_center(som_x, som_y, win_map):
+    #     fig, axs = plt.subplots(som_x, som_y, figsize=(5, 5))
+    #     fig.suptitle('Clusters')
+    #     for x in range(som_x):
+    #         for y in range(som_y):
+    #             cluster = (x, y)
+    #             if cluster in win_map.keys():
+    #                 for series in win_map[cluster]:
+    #                     axs[cluster].plot(series, c="gray", alpha=0.5)
+    #                 axs[cluster].plot(np.average(np.vstack(win_map[cluster]), axis=0), c="red")
+    #             cluster_number = x * som_y + y + 1
+    #             axs[cluster].set_title(f"Cluster {cluster_number}")
+    #
+    #     plt.show()
 
 
 
     win_map = som.win_map(mySeries)
     # Returns the mapping of the winner nodes and inputs
 
-    plot_som_series_averaged_center(som_x, som_y, win_map)
+    # plot_som_series_averaged_center(som_x, som_y, win_map)
 
 
-    def plot_som_series_dba_center(som_x, som_y, win_map):
-        fig, axs = plt.subplots(som_x, som_y, figsize=(5, 5))
-        fig.suptitle('Clusters')
-        for x in range(som_x):
-            for y in range(som_y):
-                cluster = (x, y)
-                if cluster in win_map.keys():
-                    for series in win_map[cluster]:
-                        axs[cluster].plot(series, c="gray", alpha=0.5)
-                    axs[cluster].plot(dtw_barycenter_averaging(np.vstack(win_map[cluster])),
-                                      c="red")  # I changed this part
-                cluster_number = x * som_y + y + 1
-                axs[cluster].set_title(f"Cluster {cluster_number}")
-
-        plt.show()
+    # def plot_som_series_dba_center(som_x, som_y, win_map):
+    #     fig, axs = plt.subplots(som_x, som_y, figsize=(5, 5))
+    #     fig.suptitle('Clusters')
+    #     for x in range(som_x):
+    #         for y in range(som_y):
+    #             cluster = (x, y)
+    #             if cluster in win_map.keys():
+    #                 for series in win_map[cluster]:
+    #                     axs[cluster].plot(series, c="gray", alpha=0.5)
+    #                 axs[cluster].plot(dtw_barycenter_averaging(np.vstack(win_map[cluster])),
+    #                                   c="red")  # I changed this part
+    #             cluster_number = x * som_y + y + 1
+    #             axs[cluster].set_title(f"Cluster {cluster_number}")
+    #
+    #     plt.show()
 
 
     win_map = som.win_map(mySeries)
 
-    plot_som_series_dba_center(som_x, som_y, win_map)
+    # plot_som_series_dba_center(som_x, som_y, win_map)
 
     # Let's check first 5
     for series in mySeries[:5]:
@@ -119,7 +119,7 @@ for producto in [products[0]]:
         winner_node = som.winner(mySeries[idx])
         cluster_map.append((namesOfMySeries[idx], f"Cluster {winner_node[0] * som_y + winner_node[1] + 1}"))
 
-    pd.DataFrame(cluster_map, columns=["Series", "Cluster"]).sort_values(by="Cluster").set_index("Series")
+    df_som = pd.DataFrame(cluster_map, columns=["Series", "Cluster"]).sort_values(by="Cluster").set_index("Series").reset_index()
 
 
 
@@ -139,164 +139,89 @@ for producto in [products[0]]:
 
 
 
-    fig, axs = plt.subplots(plot_count, plot_count, figsize=(5, 5))
-    fig.suptitle('Clusters')
-    row_i = 0
-    column_j = 0
-    # For each label there is,
-    # plots every series with that label
-    for label in set(labels):
-        cluster = []
-        for i in range(len(labels)):
-            if (labels[i] == label):
-                axs[row_i, column_j].plot(mySeries[i], c="gray", alpha=0.4)
-                cluster.append(mySeries[i])
-        if len(cluster) > 0:
-            axs[row_i, column_j].plot(np.average(np.vstack(cluster), axis=0), c="red")
-        axs[row_i, column_j].set_title("Cluster " + str(row_i * som_y + column_j))
-        column_j += 1
-        if column_j % plot_count == 0:
-            row_i += 1
-            column_j = 0
-
-    plt.show()
+    # fig, axs = plt.subplots(plot_count, plot_count, figsize=(5, 5))
+    # fig.suptitle('Clusters')
+    # row_i = 0
+    # column_j = 0
+    # # For each label there is,
+    # # plots every series with that label
+    # for label in set(labels):
+    #     cluster = []
+    #     for i in range(len(labels)):
+    #         if (labels[i] == label):
+    #             axs[row_i, column_j].plot(mySeries[i], c="gray", alpha=0.4)
+    #             cluster.append(mySeries[i])
+    #     if len(cluster) > 0:
+    #         axs[row_i, column_j].plot(np.average(np.vstack(cluster), axis=0), c="red")
+    #     axs[row_i, column_j].set_title("Cluster " + str(row_i * som_y + column_j))
+    #     column_j += 1
+    #     if column_j % plot_count == 0:
+    #         row_i += 1
+    #         column_j = 0
+    #
+    # plt.show()
 
     plot_count = math.ceil(math.sqrt(cluster_count))
 
-    fig, axs = plt.subplots(plot_count, plot_count, figsize=(5, 5))
-    fig.suptitle('Clusters')
-    row_i = 0
-    column_j = 0
-    for label in set(labels):
-        cluster = []
-        for i in range(len(labels)):
-            if (labels[i] == label):
-                axs[row_i, column_j].plot(mySeries[i], c="gray", alpha=0.4)
-                cluster.append(mySeries[i])
-        if len(cluster) > 0:
-            axs[row_i, column_j].plot(dtw_barycenter_averaging(np.vstack(cluster)), c="red")
-        axs[row_i, column_j].set_title("Cluster " + str(row_i * som_y + column_j))
-        column_j += 1
-        if column_j % plot_count == 0:
-            row_i += 1
-            column_j = 0
-
-    plt.show()
+    # fig, axs = plt.subplots(plot_count, plot_count, figsize=(5, 5))
+    # fig.suptitle('Clusters')
+    # row_i = 0
+    # column_j = 0
+    # for label in set(labels):
+    #     cluster = []
+    #     for i in range(len(labels)):
+    #         if (labels[i] == label):
+    #             axs[row_i, column_j].plot(mySeries[i], c="gray", alpha=0.4)
+    #             cluster.append(mySeries[i])
+    #     if len(cluster) > 0:
+    #         axs[row_i, column_j].plot(dtw_barycenter_averaging(np.vstack(cluster)), c="red")
+    #     axs[row_i, column_j].set_title("Cluster " + str(row_i * som_y + column_j))
+    #     column_j += 1
+    #     if column_j % plot_count == 0:
+    #         row_i += 1
+    #         column_j = 0
+    #
+    # plt.show()
 
     fancy_names_for_labels = [f"Cluster {label}" for label in labels]
-    pd.DataFrame(zip(namesOfMySeries, fancy_names_for_labels), columns=["Series", "Cluster"]).sort_values(
-        by="Cluster").set_index("Series")
+    df_kmeans = pd.DataFrame(zip(namesOfMySeries, fancy_names_for_labels), columns=["Series", "Cluster"]).sort_values(
+        by="Cluster").set_index("Series").reset_index()
 
-    pca = PCA(n_components=2)
-
-    mySeries_transformed = pca.fit_transform(mySeries)
-
-    kmeans = KMeans(n_clusters=cluster_count, max_iter=5000)
-
-    labels = kmeans.fit_predict(mySeries_transformed)
-
-    plot_count = math.ceil(math.sqrt(cluster_count))
-
-    fig, axs = plt.subplots(plot_count, plot_count, figsize=(5, 5))
-    fig.suptitle('Clusters')
-    row_i = 0
-    column_j = 0
-    for label in set(labels):
-        cluster = []
-        for i in range(len(labels)):
-            if (labels[i] == label):
-                axs[row_i, column_j].plot(mySeries[i], c="gray", alpha=0.4)
-                cluster.append(mySeries[i])
-        if len(cluster) > 0:
-            axs[row_i, column_j].plot(np.average(np.vstack(cluster), axis=0), c="red")
-        axs[row_i, column_j].set_title("Cluster " + str(row_i * som_y + column_j))
-        column_j += 1
-        if column_j % plot_count == 0:
-            row_i += 1
-            column_j = 0
-
-    plt.show()
-
-    fancy_names_for_labels = [f"Cluster {label}" for label in labels]
-    pd.DataFrame(zip(namesOfMySeries, fancy_names_for_labels), columns=["Series", "Cluster"]).sort_values(
-        by="Cluster").set_index("Series")
-
-
-
-    # # Realizamos el modelo KMeans
-    # start_time = time.time()
-    # model_km = TimeSeriesKMeans(n_clusters = 3,
-    #                             metric = "euclidean",
-    #                             max_iter = 10,
-    #                             random_state = seed).fit(X_train)
+    # pca = PCA(n_components=2)
     #
-    # labels_km = model_km.labels_
+    # mySeries_transformed = pca.fit_transform(mySeries)
     #
-    # print("--- %s seconds ---" % (time.time() - start_time))
+    # kmeans = KMeans(n_clusters=cluster_count, max_iter=5000)
     #
-    # # # Realizamos el modelo KShape
-    # # start_time = time.time()
-    # # model_ks = KShape(n_clusters=3,
-    # #                   verbose=True,
-    # #                   n_init=10).fit(X_train)
+    # labels = kmeans.fit_predict(mySeries_transformed)
     #
-    # # labels_ks = model_ks.labels_
+    # plot_count = math.ceil(math.sqrt(cluster_count))
     #
-    # # print("--- %s seconds ---" % (time.time() - start_time))
+    # fig, axs = plt.subplots(plot_count, plot_count, figsize=(5, 5))
+    # fig.suptitle('Clusters')
+    # row_i = 0
+    # column_j = 0
+    # for label in set(labels):
+    #     cluster = []
+    #     for i in range(len(labels)):
+    #         if (labels[i] == label):
+    #             axs[row_i, column_j].plot(mySeries[i], c="gray", alpha=0.4)
+    #             cluster.append(mySeries[i])
+    #     if len(cluster) > 0:
+    #         axs[row_i, column_j].plot(np.average(np.vstack(cluster), axis=0), c="red")
+    #     axs[row_i, column_j].set_title("Cluster " + str(row_i * som_y + column_j))
+    #     column_j += 1
+    #     if column_j % plot_count == 0:
+    #         row_i += 1
+    #         column_j = 0
     #
+    # plt.show()
     #
-    # silhouette_score(X_train, labels_km, metric="euclidean")
-    # # silhouette_score(X_train, labels_ks, metric="euclidean")
-    #
-    #
-    # # print('Training dataset accuracy for TimeSeriesKMeans clustering with dtw metric: ', accuracy_score(y_train, labels_km))
-    #
-    # # print('Training dataset accuracy for KShape clustering: ', accuracy_score(y_train, labels_ks))
-    #
-    # print('Test dataset accuracy for TimeSeriesKMeans clustering with dtw metric: ', accuracy_score(y_test, model_km.predict(X_test)))
-    #
-    # # print('Test dataset accuracy for KShape clustering: ', accuracy_score(y_test, model_ks.predict(X_test)))
-    #
-    # confusion_matrix(y_train, labels_km)
-    # # confusion_matrix(y_train, labels_ks)
-    #
-    # confusion_matrix(y_test, model_km.predict(X_test))
-    # # confusion_matrix(y_test, model_ks.predict(X_test))
-    #
-    # joblib.dump(model_km, 'modelo_entrenado_KMeans.pkl') # Guardo el modelo.
-    # # joblib.dump(model_ks, 'modelo_entrenado_KShape.pkl') # Guardo el modelo.
+    # fancy_names_for_labels = [f"Cluster {label}" for label in labels]
+    # pd.DataFrame(zip(namesOfMySeries, fancy_names_for_labels), columns=["Series", "Cluster"]).sort_values(
+    #     by="Cluster").set_index("Series")
+    df_original=dict_df_products_clustering[producto]
+    dict_df_products_clustering[producto] = df_original.merge(df_som, left_on='station_id', right_on='Series', how='left').drop(columns='Series')
+    dict_df_products_clustering[producto] = df_original.merge(df_kmeans, left_on='station_id', right_on='Series', how='left', suffixes=('_som', '_kmeans')).drop(columns='Series')
 
-
-
-
-
-
-
-
-# def plot_groups(model):
-
-#     if model == 'kmeans-dtw':
-#         model = model_km
-#     elif model == 'kshape':
-#         model = ks
-#     else:
-#         sys.exit('Please, provide a valid model string.')
-        
-#     labels = model.labels_
-
-#     plt.figure(figsize=(10, 10))
-#     for yi in range(2):
-#         plt.subplot(2, 1, 1 + yi)
-#         for xx in X_train[labels == yi]:
-#             plt.plot(xx.ravel(), "k-", alpha=.15)
-#         plt.plot(model.cluster_centers_[yi].ravel(), "r-")
-#         plt.xlim(0, size-1)
-        
-#         if yi == 0:
-#             plt.title("Diesel")
-#         else:
-#             plt.title("Hidrogen")
-#         plt.grid()
-
-#     plt.tight_layout()
-#     plt.show()
+pickle.dump(dict_df_products_clustering, open("data/output/dict_df_products_clustering", "wb"))

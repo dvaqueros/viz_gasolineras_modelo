@@ -11,6 +11,8 @@ pd.options.display.max_columns = None
 datapath = './data/raw/*.parquet'
 seed = 123
 
+#exec(open('main.py').read())
+
 # Read data
 exec(open('src/read_data.py').read())
 
@@ -34,6 +36,7 @@ exec(open('src/dataset.py').read())
 
 # Execute Time Series Clustering
 #product = "gasoline_95E5"
-#exec(open('src/clustering_model.py').read())
+exec(open('src/clustering_model.py').read())
+exec(open('src/forecast_model.py').read())
 
 #exec(open('src/main_dash.py').read())
