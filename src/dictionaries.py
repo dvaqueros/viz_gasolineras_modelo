@@ -178,30 +178,45 @@ products_titles = {
     "lng"                   : "LNG",
     "hydrogen"              : "hidrógeno"}
 
+products_titles_r = {
+    '95E5': 'gasoline_95E5',
+    '95E5 Premium': 'gasoline_95E5_premium',
+    '98E5': 'gasoline_98E5',
+    '98E10': 'gasoline_98E10',
+    'Diesel A': 'diesel_A',
+    'Diesel B': 'diesel_B',
+    'Diesel Premium': 'diesel_premium',
+    'Bioetanol': 'bioetanol',
+    'Biodiesel': 'biodiesel',
+    'LPG': 'lpg',
+    'CNG': 'cng',
+    'LNG': 'lng',
+    'Hidrógeno': 'hydrogen'}
+
 
 
 dict_district_neigh = {
-    'Arganzuela' : ['Acacias','Chopera','Embajadores','Imperial','Palacio','Palos de Moguer'],
-    'Barajas': ['Aeropuerto','Casco Histórico de Barajas','Corralejos'],
-    'Carabanchel': ['Abrantes','Buenavista','Comillas','Opañel','San Isidro','Zofío'],
-    'Centro' : ['Arapiles','Universidad'],
-    'Chamartin': ['Castilla','Ciudad Jardín','El Viso','Hispanoamérica','Nueva España','Prosperidad'],
-    'Chamberi': ['Almagro','Rios Rosas','Trafalgar','Vallehermoso'],
-    'Ciudad Lineal': ['Apostol Santiago','Colina','Concepción','Pueblo Nuevo','Quintana','San Juan Bautista','San Pascual','Simancas','Ventas'],
-    'Fuencarral-El Pardo': ['El Goloso','El Pardo','La Paz','Mirasierra','Peñagrande','Valverde'],
-    'Hortaleza': ['Canillas','Corralejos','Pinar del Rey','Piovera','Timón','Valdefuentes'],
-    'Latina': ['Aguilas','Aluche','Cuatro Vientos','Lucero'],
-    'Moncloa-Aravaca': ['Aluche','Argüelles','Berruguete','Ciudad Universitaria','El Plantío','Valdezarza'],
-    'Moratalaz': ['Marroquina','Media Legua','Vinateros'],
-    'Puente de Vallecas': ['Entrevías','Numancia','Palomeras Bajas','Palomeras Sureste','San Diego','Valdebernardo'],
-    'Retiro': ['Estrella','Pacífico'],
-    'Salamanca': ['El Viso','Fuente del Berro','Guindalera','Prosperidad','Recoletos'],
-    'San Blas': ['Amposta','Arcos','Rejas','Rosas','Simancas'],
-    'Tetuan': ['Almenara','Berruguete','Castilla','Castillejos'],
-    'Usera': ['Almendrales','Orcasitas','Orcasur','Pradolongo','San Fermín'],
-    'Vicalvaro': ['Casco histórico de Vicálvaro','Valdebernardo'],
-    'Villa de Vallecas': ['Casco Histórico de Vallecas','Casco histórico de Vicálvaro','Ensanche de Vallecas'],
-    'Villaverde': ['Butarque','Los Angeles','Los Rosales','San Fermín','Villaverde Alto', 'Casco Histórico de Villaverde']
+    'Arganzuela'            : ['Todos', 'Acacias','Chopera','Embajadores','Imperial','Palacio','Palos de Moguer'],
+    'Barajas'               : ['Todos', 'Aeropuerto','Casco Histórico de Barajas','Corralejos'],
+    'Carabanchel'           : ['Todos', 'Abrantes','Buenavista','Comillas','Opañel','San Isidro','Zofío'],
+    'Centro'                : ['Todos', 'Arapiles','Universidad'],
+    'Chamartin'             : ['Todos', 'Castilla','Ciudad Jardín','El Viso','Hispanoamérica','Nueva España','Prosperidad'],
+    'Chamberi'              : ['Todos', 'Almagro','Rios Rosas','Trafalgar','Vallehermoso'],
+    'Ciudad Lineal'         : ['Todos', 'Apostol Santiago','Colina','Concepción','Pueblo Nuevo','Quintana','San Juan Bautista','San Pascual','Simancas','Ventas'],
+    'Fuencarral-El Pardo'   : ['Todos', 'El Goloso','El Pardo','La Paz','Mirasierra','Peñagrande','Valverde'],
+    'Hortaleza'             : ['Todos', 'Canillas','Corralejos','Pinar del Rey','Piovera','Timón','Valdefuentes'],
+    'Latina'                : ['Todos', 'Aguilas','Aluche','Cuatro Vientos','Lucero'],
+    'Moncloa-Aravaca'       : ['Todos', 'Aluche','Argüelles','Berruguete','Ciudad Universitaria','El Plantío','Valdezarza'],
+    'Moratalaz'             : ['Todos', 'Marroquina','Media Legua','Vinateros'],
+    'Puente de Vallecas'    : ['Todos', 'Entrevías','Numancia','Palomeras Bajas','Palomeras Sureste','San Diego','Valdebernardo'],
+    'Retiro'                : ['Todos', 'Estrella','Pacífico'],
+    'Salamanca'             : ['Todos', 'El Viso','Fuente del Berro','Guindalera','Prosperidad','Recoletos'],
+    'San Blas'              : ['Todos', 'Amposta','Arcos','Rejas','Rosas','Simancas'],
+    'Tetuan'                : ['Todos', 'Almenara','Berruguete','Castilla','Castillejos'],
+    'Usera'                 : ['Todos', 'Almendrales','Orcasitas','Orcasur','Pradolongo','San Fermín'],
+    'Vicalvaro'             : ['Todos', 'Casco histórico de Vicálvaro','Valdebernardo'],
+    'Villa de Vallecas'     : ['Todos', 'Casco Histórico de Vallecas','Casco histórico de Vicálvaro','Ensanche de Vallecas'],
+    'Villaverde'            : ['Todos', 'Butarque','Los Angeles','Los Rosales','San Fermín','Villaverde Alto', 'Casco Histórico de Villaverde']
 }
 
 list_distritos =['Arganzuela', 'Barajas', 'Carabanchel', 'Centro', 'Chamartin', 'Chamberi', 'Ciudad Lineal', 'Fuencarral-El Pardo', 'Hortaleza', 'Latina', 'Moncloa-Aravaca', 'Moratalaz', 'Puente de Vallecas', 'Retiro', 'Salamanca', 'San Blas', 'Tetuan', 'Usera', 'Vicalvaro', 'Villa de Vallecas', 'Villaverde']

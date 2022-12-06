@@ -2,6 +2,8 @@ import sys
 sys.path.append('src/')
 import dictionaries
 import mapa
+import mapaDensidad
+import mapaPrecio
 import pie
 import violin
 
@@ -37,6 +39,7 @@ with open("data/output/df_parsed", 'rb') as f:
 with open("data/output/madrid-city", 'rb') as f:
     city_border = pickle.load(f)
 
+dict_df=dict_df_products.copy()
 df=df_parsed.copy()
 product="gasoline_95E5"
 
@@ -57,17 +60,24 @@ def getDistritos(distrito):
     return distritos
 
 
-def filtrarDF(distrito):
+def filtrarDF(producto):#, distrito, barrio):
 
-    if distrito == 'Todos':
-        distritos = ['Arganzuela', 'Barajas', 'Carabanchel', 'Centro', 'Chamartin', 'Chamberi', 'Ciudad Lineal', 'Fuencarral-El Pardo', 'Hortaleza', 'Latina', 'Moncloa-Aravaca', 'Moratalaz', 'Puente de Vallecas', 'Retiro', 'Salamanca', 'San Blas', 'Tetuan', 'Usera', 'Vicalvaro', 'Villa de Vallecas', 'Villaverde']
+    if producto == 'comparativa':
+        return df
     else:
-        distritos = [distrito]
-    return distritos
+        return dict_df[producto]
 
 
-def getMapa():
-    fig=mapa.crearMapaScatter(df, city_border)
+def getMapa(id, prod):#, distrito, barrio):
+    #print(id)
+    df=filtrarDF(prod)#,  distrito, barrio)
+    if id == 'id_Localizacion':
+        fig=mapa.crearMapaScatter(df, city_border)
+    elif id == 'id_Densidad':
+        fig=mapaDensidad.crearMapaDensidad(df)
+    else:
+        fig = mapaPrecio.crearMapaPrecio(df, prod)
+
     return fig
 
 def getPie():
@@ -159,6 +169,7 @@ app.layout = dbc.Container(
                     dcc.Dropdown(
                         id="district-dd",
                         options= getDropdownDistritos(),
+                        value='Todos',
                         placeholder="Distrito",
                     )
                 ),
@@ -182,23 +193,23 @@ app.layout = dbc.Container(
                         dbc.Row(
                             dbc.Tabs(
                                 [
-                                    dbc.Tab(label="95E5",             style={'padding': '0'},     tab_id="id_gasoline_95E5"),
-                                    dbc.Tab(label="95E5 Premium",     style={'padding': '0'},     tab_id="id_gasoline_95E5_premium"),
-                                    dbc.Tab(label="98E5",             style={'padding': '0'},     tab_id="id_gasoline_98E5"),
-                                    dbc.Tab(label="98E10",            style={'padding': '0'},     tab_id="id_gasoline_98E10"),
-                                    dbc.Tab(label="Diesel A",         style={'padding': '0'},     tab_id="id_diesel_A"),
-                                    dbc.Tab(label="Diesel B",         style={'padding': '0'},     tab_id="id_diesel_B"),
-                                    dbc.Tab(label="Diesel Premium",   style={'padding': '0'},     tab_id="id_diesel_premium"),
-                                    dbc.Tab(label="Bioetanol",        style={'padding': '0'},     tab_id="id_bioetanol"),
-                                    dbc.Tab(label="Biodiesel",        style={'padding': '0'},     tab_id="id_biodiesel"),
-                                    dbc.Tab(label="LPG",              style={'padding': '0'},     tab_id="id_lpg"),
-                                    dbc.Tab(label="CNG",              style={'padding': '0'},     tab_id="id_cng"),
-                                    dbc.Tab(label="LNG",              style={'padding': '0'},     tab_id="id_lng"),
-                                    dbc.Tab(label="Hidrógeno",        style={'padding': '0'},     tab_id="id_hydrogen"),
-                                    dbc.Tab(label="Comparativa",      style={'padding': '0'},     tab_id="id_comparativa")
+                                    dbc.Tab(label="95E5",             style={'padding': '0'},     tab_id="gasoline_95E5"),
+                                    dbc.Tab(label="95E5 Premium",     style={'padding': '0'},     tab_id="gasoline_95E5_premium"),
+                                    dbc.Tab(label="98E5",             style={'padding': '0'},     tab_id="gasoline_98E5"),
+                                    #dbc.Tab(label="98E10",            style={'padding': '0'},     tab_id="gasoline_98E10"),
+                                    dbc.Tab(label="Diesel A",         style={'padding': '0'},     tab_id="diesel_A"),
+                                    dbc.Tab(label="Diesel B",         style={'padding': '0'},     tab_id="diesel_B"),
+                                    dbc.Tab(label="Diesel Premium",   style={'padding': '0'},     tab_id="diesel_premium"),
+                                    #dbc.Tab(label="Bioetanol",        style={'padding': '0'},     tab_id="bioetanol"),
+                                    dbc.Tab(label="Biodiesel",        style={'padding': '0'},     tab_id="biodiesel"),
+                                    dbc.Tab(label="LPG",              style={'padding': '0'},     tab_id="lpg"),
+                                    dbc.Tab(label="CNG",              style={'padding': '0'},     tab_id="cng"),
+                                    dbc.Tab(label="LNG",              style={'padding': '0'},     tab_id="lng"),
+                                    #dbc.Tab(label="Hidrógeno",        style={'padding': '0'},     tab_id="hydrogen"),
+                                    dbc.Tab(label="Comparativa",      style={'padding': '0'},     tab_id="comparativa")
                                 ],
-                                id="tabs",
-                                active_tab="95E5",
+                                id="tab_products",
+                                active_tab="comparativa",
                                 style=
                                     {
                                         "text-align":"center",
@@ -215,11 +226,36 @@ app.layout = dbc.Container(
                                     [
                                         html.H3("Mapa con la distribución de las gasolinearas por empresa"),
                                         dbc.Card(
-                                            dbc.CardBody([
-                                                dcc.Graph(id="plotScatterMap",
-                                                          figure=getMapa(),
-                                                          style={'width': '100%', 'height': '100%'})
-                                            ]),
+                                            [
+                                                dbc.Row(
+                                                    dbc.Tabs(
+                                                        [
+                                                            dbc.Tab(label="Localizacion",  tab_id="id_Localizacion"),
+                                                            dbc.Tab(label="Densidad",      tab_id="id_Densidad"),
+                                                            dbc.Tab(label="Precio",        tab_id="id_Precio"),
+                                                        ],
+                                                        id="tab_mapas",
+                                                        active_tab="id_Localizacion",
+                                                        style=
+                                                            {
+                                                                "text-align":"center",
+                                                                "width": "100%",
+                                                                "margin-top": "1%",
+                                                                "font-size": "80%",
+                                                            }
+                                                    )
+
+                                                ),
+                                                dbc.Row(
+                                                    dbc.CardBody(
+                                                        [
+                                                                dcc.Graph(id="plotMap",
+                                                                      figure=getMapa("id_Localizacion", "comparativa"),
+                                                                      style={'width': '100%', 'height': '100%'}),
+                                                        ]
+                                                    ),
+                                                )
+                                            ]
                                         ),
                                     ]
                             )
@@ -294,6 +330,16 @@ def fechasInitEndSlider(min_max_date):
             min_max_date[1].strftime("%Y-%m-%d"),]
 
 
+
+@app.callback( #Mapa a mostrara
+    Output("plotMap", "figure"),
+    Input("tab_mapas", 'active_tab'),
+    Input("tab_products", 'active_tab'),
+    #Input("district-dd", 'value'),
+    #Input("barrio-dd", 'value'),
+)
+def selectTabMap(active_tab_map, active_tab_prod):#, distrito, barrio):
+    return getMapa(active_tab_map, active_tab_prod)#, distrito, barrio)
 
 
 

@@ -42,9 +42,9 @@ def crearMapaScatter(df_mapa, city_border):
     fig.update_layout(mapbox_style="open-street-map",
                       margin={"r": 0, "t": 0, "l": 0, "b": 0},
                       mapbox=dict(accesstoken=mapbox_access_token,
-                                  center=dict(lat=40.42, lon=-3.72),
+                                  center=dict(lat=40.48, lon = -3.72),
                                   style='light',
-                                  zoom=10),
+                                  zoom=9.1),
                       legend=dict(
                           orientation="h",
                           yanchor="bottom",
