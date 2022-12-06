@@ -8,7 +8,9 @@ def crearLineas(df_lineas, product):
         print(product)
         print(df_lineas)
         # Realizamos una media por fecha del precio del combustible en todas las gasolineras.
-        df_lineas = df_lineas.groupby(['date'], group_keys=True).mean().reset_index()
+        #df_lineas = df_lineas.groupby(['date'], group_keys=True).mean().reset_index()
+        df_lineas = df_lineas.groupby(['date'], as_index=False).agg({product: 'mean'})
+
 
         fig = px.line(df_lineas,
                       x='date',

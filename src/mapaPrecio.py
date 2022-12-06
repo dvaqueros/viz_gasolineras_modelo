@@ -59,10 +59,10 @@ def crearMapaPrecio(df_mapa, product):
                                 marker_line_width=2))
 
             fig.add_trace(go.Choroplethmapbox(geojson=neighbourhood_borders, locations=np.sort(df_mapa.neighbourhood.unique()),
-                                    z=df_mapa.groupby("neighbourhood", as_index=False).mean()[product],
+                                    z=df_mapa.groupby("neighbourhood", as_index=False).agg({product: 'mean'})[product],
                                     colorscale="tealgrn_r",
-                                    zmin=min(df_mapa.groupby("neighbourhood", as_index=False).mean()[product]),
-                                    zmax=max(df_mapa.groupby("neighbourhood", as_index=False).mean()[product]),
+                                    zmin=min(df_mapa.groupby("neighbourhood", as_index=False).agg({product: 'mean'})[product]),
+                                    zmax=max(df_mapa.groupby("neighbourhood", as_index=False).agg({product: 'mean'})[product]),
                                     marker_opacity=0.9, marker_line_width=0))
 
             fig.update_layout(mapbox_style="open-street-map",

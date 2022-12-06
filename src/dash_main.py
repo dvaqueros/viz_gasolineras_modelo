@@ -80,7 +80,7 @@ def getMapa(id, prod, distrito, start_date, end_date):#, barrio):
     #print(id)
     df=filtrarDF(prod, distrito, start_date, end_date)#, barrio)
     if id == 'id_Localizacion':
-        fig = mapa.crearMapaScatter(df, distrito)
+        fig = mapa.crearMapaScatter(df)
     elif id == 'id_Densidad':
         fig = mapaDensidad.crearMapaDensidad(df)
     else:
