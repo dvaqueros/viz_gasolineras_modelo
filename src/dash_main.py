@@ -27,17 +27,17 @@ from PIL import Image
 # Read geojsons
 exec(open('src/dash_declarations.py').read())
 
-# Importamos los datos para cada combustible
-with open("data/output/diccionario_df_productos", 'rb') as f:
-    dict_df_products = pickle.load(f)
-
+# # Importamos los datos para cada combustible
+# with open("data/output/diccionario_df_productos", 'rb') as f:
+#     dict_df_products = pickle.load(f)
+#
 # Importamos los datos ya procesados
 with open("data/output/df_parsed", 'rb') as f:
-    df_parsed = pickle.load(f)
-
-# Importamos los datos ya procesados
-with open("data/output/madrid-city", 'rb') as f:
-    city_border = pickle.load(f)
+    df_parsed_1 = pickle.load(f)
+#
+# # Importamos los datos ya procesados
+# with open("data/output/madrid-city", 'rb') as f:
+#     city_border = pickle.load(f)
 
 #dict_df=dict_df_products.copy()
 #df=df_parsed.copy()
@@ -73,13 +73,15 @@ def getMapa(id, prod, distrito):#, barrio):
     #print(id)
     df=filtrarDF(prod, distrito)#, barrio)
     if id == 'id_Localizacion':
-        fig=mapa.crearMapaScatter(df, city_border)
+        fig = mapa.crearMapaScatter(df, distrito)
     elif id == 'id_Densidad':
-        fig=mapaDensidad.crearMapaDensidad(df)
+        fig = mapaDensidad.crearMapaDensidad(df)
     else:
         fig = mapaPrecio.crearMapaPrecio(df, prod)
 
     return fig
+
+
 
 def getPie(prod, distrito):
     df = filtrarDF(prod, distrito)  # , barrio)
@@ -128,10 +130,10 @@ app.layout = dbc.Container(
                 ),
                 dcc.DatePickerRange(
                     id='date-picker',
-                    min_date_allowed=min(df_parsed['date']),
-                    max_date_allowed=max(df_parsed['date']),
-                    start_date=min(df_parsed['date']),
-                    end_date=max(df_parsed['date']),
+                    min_date_allowed=min(df_parsed_1['date']),
+                    max_date_allowed=max(df_parsed_1['date']),
+                    start_date=min(df_parsed_1['date']),
+                    end_date=max(df_parsed_1['date']),
                     style=
                         {
                             "text-align":"center",
@@ -236,12 +238,12 @@ app.layout = dbc.Container(
                                                     dbc.Row(
                                                         dbc.Tabs(
                                                             [
-                                                                dbc.Tab(label="Localizacion",  tab_id="id_Localizacion"),
                                                                 dbc.Tab(label="Densidad",      tab_id="id_Densidad"),
                                                                 dbc.Tab(label="Precio",        tab_id="id_Precio"),
+                                                                dbc.Tab(label="Localizacion",  tab_id="id_Localizacion"),
                                                             ],
                                                             id="tab_mapas",
-                                                            active_tab="id_Localizacion",
+                                                            active_tab="id_Densidad",
                                                             style=
                                                                 {
                                                                     "text-align":"center",
@@ -256,7 +258,7 @@ app.layout = dbc.Container(
                                                         dbc.CardBody(
                                                             [
                                                                     dcc.Graph(id="plotMap",
-                                                                          figure=getMapa("id_Localizacion", "comparativa", 'Todos'),
+                                                                          figure=getMapa("id_Densidad", "comparativa", 'Todos'),
                                                                           style={'width': '100%', 'height': '100%'}),
                                                             ]
                                                         ),
