@@ -1,10 +1,11 @@
 import plotly.graph_objects as go
 from geojsons import *
 import pickle
+from dictionaries import *
+
 
 # Hago copia para no cargarme el original
 #df_mapa = df_parsed.copy()
-
 
 
 def crearMapaScatter(df_mapa, city_border):
@@ -21,6 +22,7 @@ def crearMapaScatter(df_mapa, city_border):
                                       colorscale="Blues",
                                       zmin=0,
                                       zmax=max(df_mapa.groupby("neighbourhood", as_index=False).count()['station_id']),
+                                      showscale=False,
                                       marker_opacity=0.25,
                                       marker_line_width=2))
 
@@ -42,7 +44,15 @@ def crearMapaScatter(df_mapa, city_border):
                       mapbox=dict(accesstoken=mapbox_access_token,
                                   center=dict(lat=40.42, lon=-3.72),
                                   style='light',
-                                  zoom=10))
+                                  zoom=10),
+                      legend=dict(
+                          orientation="h",
+                          yanchor="bottom",
+                          y=1.02,
+                          xanchor="right",
+                          x=1
+                      )
+                      )
 
     return fig
 

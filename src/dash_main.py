@@ -2,6 +2,9 @@ import sys
 sys.path.append('src/')
 import dictionaries
 import mapa
+import pie
+import violin
+
 
 import time, datetime
 
@@ -19,14 +22,8 @@ import plotly.express as px
 
 from PIL import Image
 
-
-#####
-# https://stackoverflow.com/questions/51063191/date-slider-with-plotly-dash-does-not-work
-
-
-
-
-#######
+# Read geojsons
+exec(open('src/dash_declarations.py').read())
 
 # Importamos los datos para cada combustible
 with open("data/output/diccionario_df_productos", 'rb') as f:
@@ -41,6 +38,7 @@ with open("data/output/madrid-city", 'rb') as f:
     city_border = pickle.load(f)
 
 df=df_parsed.copy()
+product="gasoline_95E5"
 
 def getDropdownDistritos():
     #distritos = [dbc.DropdownMenuItem(v, id=v+'_id') for v in dictionaries.list_distritos]
@@ -68,10 +66,17 @@ def filtrarDF(distrito):
     return distritos
 
 
-def getTabContent():
+def getMapa():
     fig=mapa.crearMapaScatter(df, city_border)
     return fig
 
+def getPie():
+    fig=pie.crearPie(df)
+    return fig
+
+def getViolinEmpresas():
+    fig=violin.crearViolinEmpresas(df, product)
+    return fig
 
 
 app = dash.Dash(suppress_callback_exceptions=False,
@@ -165,7 +170,8 @@ app.layout = dbc.Container(
                     )
                 )
             ],
-            id="row-dropdown-distritos"
+            id="row-dropdown-distritos",
+
         ),
         html.Br(),
 
@@ -173,43 +179,85 @@ app.layout = dbc.Container(
             [
                 dbc.Col(
                     [
-                        dbc.Tabs([
-                            dbc.Tab(label="95E5",         tab_id="id_gasoline_95E5"),
-                            dbc.Tab(label="95E5 Premium", tab_id="id_gasoline_95E5_premium"),
-                            dbc.Tab(label="98E5",         tab_id="id_gasoline_98E5"),
-                            dbc.Tab(label="98E10",        tab_id="id_gasoline_98E10"),
-                            dbc.Tab(label="Diesel A",              tab_id="id_diesel_A"),
-                            dbc.Tab(label="Diesel B",              tab_id="id_diesel_B"),
-                            dbc.Tab(label="Diesel Premium",        tab_id="id_diesel_premium"),
-                            dbc.Tab(label="Bioetanol",             tab_id="id_bioetanol"),
-                            dbc.Tab(label="Biodiesel",             tab_id="id_biodiesel"),
-                            dbc.Tab(label="LPG",                   tab_id="id_lpg"),
-                            dbc.Tab(label="CNG",                   tab_id="id_cng"),
-                            dbc.Tab(label="LNG",                   tab_id="id_lng"),
-                            dbc.Tab(label="Hidrógeno",             tab_id="id_hydrogen"),
-                            dbc.Tab(label="Comparativa",           tab_id="id_comparativa")
-                        ],
-                            id="tabs",
-                            active_tab="95E5",
-                            style=
-                                {
-                                    "text-align":"center",
-                                    "width": "100%",
-                                    "margin-top": "1%",
-                                }
+                        dbc.Row(
+                            dbc.Tabs(
+                                [
+                                    dbc.Tab(label="95E5",             style={'padding': '0'},     tab_id="id_gasoline_95E5"),
+                                    dbc.Tab(label="95E5 Premium",     style={'padding': '0'},     tab_id="id_gasoline_95E5_premium"),
+                                    dbc.Tab(label="98E5",             style={'padding': '0'},     tab_id="id_gasoline_98E5"),
+                                    dbc.Tab(label="98E10",            style={'padding': '0'},     tab_id="id_gasoline_98E10"),
+                                    dbc.Tab(label="Diesel A",         style={'padding': '0'},     tab_id="id_diesel_A"),
+                                    dbc.Tab(label="Diesel B",         style={'padding': '0'},     tab_id="id_diesel_B"),
+                                    dbc.Tab(label="Diesel Premium",   style={'padding': '0'},     tab_id="id_diesel_premium"),
+                                    dbc.Tab(label="Bioetanol",        style={'padding': '0'},     tab_id="id_bioetanol"),
+                                    dbc.Tab(label="Biodiesel",        style={'padding': '0'},     tab_id="id_biodiesel"),
+                                    dbc.Tab(label="LPG",              style={'padding': '0'},     tab_id="id_lpg"),
+                                    dbc.Tab(label="CNG",              style={'padding': '0'},     tab_id="id_cng"),
+                                    dbc.Tab(label="LNG",              style={'padding': '0'},     tab_id="id_lng"),
+                                    dbc.Tab(label="Hidrógeno",        style={'padding': '0'},     tab_id="id_hydrogen"),
+                                    dbc.Tab(label="Comparativa",      style={'padding': '0'},     tab_id="id_comparativa")
+                                ],
+                                id="tabs",
+                                active_tab="95E5",
+                                style=
+                                    {
+                                        "text-align":"center",
+                                        "width": "100%",
+                                        "margin-top": "1%",
+                                        "font-size": "80%",
+                                    }
+                            )
                         ),
-                        html.Div(id='tabs-content',
-                                 children=
+                        dbc.Row(
+                            html.Div(
+                                id='divPlotMap',
+                                children=
                                     [
+                                        html.H3("Mapa con la distribución de las gasolinearas por empresa"),
                                         dbc.Card(
                                             dbc.CardBody([
-                                                dcc.Graph(id="subplot-profitability",
-                                                          figure=getTabContent(),
+                                                dcc.Graph(id="plotScatterMap",
+                                                          figure=getMapa(),
                                                           style={'width': '100%', 'height': '100%'})
                                             ]),
-                                        )
+                                        ),
                                     ]
-                                 )
+                            )
+                        ),
+                        dbc.Row(
+                            html.Div(
+                                id='divPlotPie',
+                                children=
+                                     [
+                                         html.H3("Mapa con la distribución de las gasolinearas por empresa"),
+                                         dbc.Card(
+                                             dbc.CardBody([
+                                                 dcc.Graph(id="plotPie",
+                                                           figure=getPie(),
+                                                           style={'width': '100%', 'height': '100%'}
+                                                           )
+                                             ]),
+                                         ),
+                                     ]
+                            )
+                        ),
+                        dbc.Row(
+                            html.Div(
+                                id='divPlotViolinEmpresas',
+                                children=
+                                     [
+                                         html.H3("Mapa con la distribución de las gasolinearas por empresa"),
+                                         dbc.Card(
+                                             dbc.CardBody([
+                                                 dcc.Graph(id="plotViolinEmpresas",
+                                                           figure=getViolinEmpresas(),
+                                                           style={'width': '100%', 'height': '100%'}
+                                                           )
+                                             ]),
+                                         ),
+                                     ]
+                            )
+                        )
                     ],
                     style=
                         {

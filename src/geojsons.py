@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 import pickle
-from dataset import *
+#from dictionaries import *
 
 
 # https://chart-studio.plotly.com/~empet/15238/tips-to-extract-data-from-a-geojson-di/#/

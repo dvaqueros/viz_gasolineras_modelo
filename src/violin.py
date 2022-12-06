@@ -1,19 +1,21 @@
-#Algo le pasa a los 0
+import numpy as np
+from dictionaries import *
+import plotly.graph_objects as go
 
-df_violin = df.copy()
-#Voy a coger la ultima fecha de cada gasolinera para solo pintar un punto
-df_violin = df_violin[['date', 'gasoline_95E5', 'diesel_A']]
+def crearViolinEmpresas(df_violin, product):
+
+    df_violin = df_violin.replace(0, np.nan)
+    df_violin = df_violin.sort_values(['station_id', 'date'], ascending = False).groupby('name_parsed', as_index = False).first()
+    df_violin = df_violin[['date'] + products + ['name_parsed']]
 
 
-fig = go.Figure()
+    fig = go.Figure()
 
-gas_type = ['gasoline_95E5', 'diesel_A']
-
-for gas in gas_type:
-    fig.add_trace(go.Violin(
-                            y=df_violin[gas],
-                            name=gas,
-                            box_visible=True,
-                            meanline_visible=True))
-
-fig.show()
+    for company in df_violin['name_parsed']:
+        fig.add_trace(go.Violin(
+                                y = df_violin[df_violin['name_parsed']==company][product],
+                                name = company,
+                                box_visible = True,
+                                meanline_visible = True ))
+    fig.update_layout(title_text="Distribución de precio de " + products_titles[product] + " por compañia", yaxis_zeroline=True)
+    return fig
